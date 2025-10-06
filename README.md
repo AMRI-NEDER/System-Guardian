@@ -1,0 +1,1 @@
+A set of lightweight shell scripts to monitor system health and network security. Includes real-time CPU, RAM, and disk usage alerts, network scans to detect rogue devices, and basic DoS attack detection. Ideal for securing Linux servers and home networks.
