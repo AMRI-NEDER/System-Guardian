@@ -1,0 +1,5 @@
+connected devices are :
+? (10.103.172.205) at 08:01:28:70:bc:87 [ether] PERM on enp0s3
+_gateway (10.103.172.71) at ba:29:51:40:bf:57 [ether] on enp0s3
+
+No rogue detected

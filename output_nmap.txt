@@ -1,0 +1,16 @@
+🔍 Scanning network: 10.103.172.229/24
+✅ Network scan completed.
+Active hosts: 3
+Log saved in: logs/network_scan_20250929_231809.log
+Scan started at: 2025-09-29 23:18:09
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-09-29 23:18 UTC
+Nmap scan report for 10.103.172.40
+Host is up (0.0012s latency).
+Nmap scan report for _gateway (10.103.172.71)
+Host is up (0.016s latency).
+Nmap scan report for ubuntu (10.103.172.229)
+Host is up (0.00025s latency).
+Nmap done: 256 IP addresses (3 hosts up) scanned in 11.45 seconds
+
+📊 Summary:
+Active hosts found: 3

@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# تحقق من صلاحية المستخدم (root)
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run this script as root or using sudo."
+  exit 1
+fi
+
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <CPU | RAM | Disk | Network>"
+  exit 1
+fi
+
+COMP="$1"
+mkdir -p logs
+echo "$(date '+%Y-%m-%d %H:%M:%S') Auto-action triggered for: $COMP" >> logs/auto_actions.log
+
+case "$COMP" in
+  CPU)
+    echo "Trying to fix CPU usage..."
+    SELF_PID=$$
+    # إيجاد أعلى عملية تستهلك CPU غير العملية نفسها
+    TOP_PID=$(ps -eo pid,%cpu --sort=-%cpu | awk -v self="$SELF_PID" 'NR>1 { if ($1 != self) { print $1; exit } }')
+
+    if [ -z "$TOP_PID" ]; then
+      echo "No high CPU process found."
+      echo "$(date '+%Y-%m-%d %H:%M:%S') No high CPU process found." >> logs/auto_actions.log
+      ./alert.sh "Auto-action: No high CPU process found"
+    else
+      echo "Killing process with PID: $TOP_PID"
+      kill -9 "$TOP_PID"
+      echo "$(date '+%Y-%m-%d %H:%M:%S') Killed high CPU process: $TOP_PID" >> logs/auto_actions.log
+      ./alert.sh "Auto-action: killed high CPU process (PID: $TOP_PID)"
+    fi
+    ;;
+    
+  RAM)
+    echo "Clearing RAM cache..."
+    sync
+    echo 3 > /proc/sys/vm/drop_caches
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Cleared RAM caches." >> logs/auto_actions.log
+    ./alert.sh "Auto-action: cleared RAM caches"
+    ;;
+
+  Disk)
+    echo "Deleting old temp files in /tmp..."
+    find /tmp -type f -mtime +7 -exec rm -f {} \;
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Deleted old temp files in /tmp." >> logs/auto_actions.log
+    ./alert.sh "Auto-action: deleted old temp files"
+    ;;
+
+  Network)
+    echo "Restarting network service..."
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl restart NetworkManager.service 2>/dev/null || systemctl restart networking.service 2>/dev/null
+    else
+      service networking restart 2>/dev/null
+    fi
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Restarted network service." >> logs/auto_actions.log
+    ./alert.sh "Auto-action: restarted netw

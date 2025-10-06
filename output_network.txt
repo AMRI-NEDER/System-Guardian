@@ -1,0 +1,3 @@
+alert: ⚠️ Network is down
+Please run this script as root or using sudo.
+Network is DOWN
